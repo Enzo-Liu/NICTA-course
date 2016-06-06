@@ -360,8 +360,12 @@ filtering ::
   (a -> f Bool)
   -> List a
   -> f (List a)
-filtering =
-  error "todo: Course.Applicative#filtering"
+filtering _ Nil = return Nil
+-- filtering p (x:.xs) = deduce <*> (filtering p xs)
+--   where deduce = (\t-> if t then (x:.) else id) <$> p x
+filtering p l =  foldRight f (pure Nil) l
+  where f c acc = lift2 (\t->if t then (c:.) else id) (p c) acc
+
 
 -----------------------
 -- SUPPORT LIBRARIES --
