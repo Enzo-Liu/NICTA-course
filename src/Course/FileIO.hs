@@ -61,8 +61,10 @@ the contents of c
 -- /Tip:/ use @getArgs@ and @run@
 main ::
   IO ()
-main =
-  error "todo: Course.FileIO#main"
+main = getArgs >>= runFiles
+  where runFiles :: List Chars -> IO ()
+        runFiles Nil = return ()
+        runFiles (x:._) = run x
 
 type FilePath =
   Chars
@@ -71,31 +73,26 @@ type FilePath =
 run ::
   Chars
   -> IO ()
-run =
-  error "todo: Course.FileIO#run"
+run = (=<<) (\(_,contents)-> (=<<) printFiles . getFiles $ lines contents) . getFile
 
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
-getFiles =
-  error "todo: Course.FileIO#getFiles"
+getFiles = sequence . (getFile <$>)
 
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
-getFile =
-  error "todo: Course.FileIO#getFile"
+getFile f = (\cs-> return (f, cs)) =<< readFile f
+-- lift2 (<$>) (,) readFile
 
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
-printFiles =
-  error "todo: Course.FileIO#printFiles"
+printFiles = void . sequence . (<$>) (uncurry printFile)
 
 printFile ::
   FilePath
   -> Chars
   -> IO ()
-printFile =
-  error "todo: Course.FileIO#printFile"
-
+printFile f c = putStrLn ("============ " ++ f) >> putStrLn c
