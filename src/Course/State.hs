@@ -151,12 +151,10 @@ firstRepeat ::
 firstRepeat l = eval (findM setContains l) S.empty
 
 setContains :: Ord a => a -> State (S.Set a) Bool
-setContains a = State $ \s ->
-          if S.member a s then (True, s) else (False, S.insert a s)
+setContains a = State (S.member a &&& S.insert a)
 
 setNotContains :: Ord a => a -> State (S.Set a) Bool
-setNotContains a = State $ \s ->
-          if S.member a s then (False, s) else (True, S.insert a s)
+setNotContains a = State (S.notMember a &&& S.insert a)
 
 -- | Remove all duplicate elements in a `List`.
 -- /Tip:/ Use `filtering` and `State` with a @Data.Set#Set@.

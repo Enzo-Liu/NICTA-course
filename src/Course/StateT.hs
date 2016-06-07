@@ -285,7 +285,12 @@ distinctG ::
   List a
   -> Logger Chars (Optional (List a))
 distinctG l = runOptionalT $ evalT (filtering notContains l) S.empty
-  where notContains a | a > 100 = StateT $ \_ ->
-                          OptionalT $ log1 (fromString ("aborting > 100: " P.++ (show a))) Empty
+  where notContains a
+          | a > 100 = StateT $ \_ ->
+              OptionalT $ log1 (fromString ("aborting > 100: " P.++ (show a))) Empty
         notContains a = StateT $ \s ->
-          OptionalT $ (if even a then log1 (fromString ("even number: " P.++ (show a))) else pure) (Full (S.notMember a s,S.insert a s))
+          OptionalT $
+          (if even a
+            then log1 (fromString ("even number: " P.++ (show a)))
+            else pure)
+          (Full $ (S.notMember a &&& S.insert a ) s)
