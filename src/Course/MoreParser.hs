@@ -228,7 +228,7 @@ betweenCharTok ::
   -> Char
   -> Parser a
   -> Parser a
-betweenCharTok a b pa= between (is a) (is b) pa
+betweenCharTok a b pa= between (charTok a) (charTok b) pa
 
 -- | Write a function that parses 4 hex digits and return the character value.
 --
