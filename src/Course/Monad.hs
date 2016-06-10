@@ -1,7 +1,7 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE InstanceSigs        #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
+{-# LANGUAGE RebindableSyntax    #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE InstanceSigs #-}
-{-# LANGUAGE RebindableSyntax #-}
 
 module Course.Monad(
   Monad(..)
@@ -10,13 +10,13 @@ module Course.Monad(
 , (<=<)
 ) where
 
-import Course.Applicative hiding ((<*>))
-import Course.Core
-import Course.Functor
-import Course.Id
-import Course.List
-import Course.Optional
-import qualified Prelude as P((=<<))
+import           Course.Applicative hiding ((<*>))
+import           Course.Core
+import           Course.Functor
+import           Course.Id
+import           Course.List
+import           Course.Optional
+import qualified Prelude            as P ((=<<))
 
 -- | All instances of the `Monad` type-class must satisfy one law. This law
 -- is not checked by the compiler. This law is given as:
@@ -70,7 +70,7 @@ infixr 1 =<<
   -> f b
   -- fmap bind
   -- f a -> a -> f b -> f b
-ff <*> a = (\f-> f <$> a) =<< ff
+ff <*> a = (<$> a) =<< ff
 
 infixl 4 <*>
 
@@ -115,9 +115,9 @@ instance Monad Optional where
 -- 119
 instance Monad ((->) t) where
   (=<<) ::
-    (a -> ((->) t b))
-    -> ((->) t a)
-    -> ((->) t b)
+    (a -> (->) t b)
+    -> (->) t a
+    -> (->) t b
   f =<< g = \t-> f (g t) t
 
 -- | Flattens a combined structure to a single structure.
@@ -165,7 +165,7 @@ infixl 1 >>=
   -> (a -> f b)
   -> a
   -> f c
-f <=< g = \a -> (g a) >>= f
+f <=< g = \a -> g a >>= f
 -- \a -> (=<<) f (g a)
 -- \a -> (=<<) f . g $ a
 -- (=<<) f . g
